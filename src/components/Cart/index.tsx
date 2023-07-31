@@ -2,10 +2,21 @@ import CartFooter from "../CartFooter"
 import CartHeader from "../CartHeader"
 import Product from "../Product"
 import { cart as data } from "../../data"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const Cart = () => {
   const [cart, setCart] = useState(data)
+  const [total, setTotal] = useState({
+    price: cart.reduce((acc, cur) => acc + cur.priceTotal, 0),
+    count: cart.reduce((acc, cur) => acc + cur.count, 0),
+  })
+
+  useEffect(() => {
+    setTotal({
+      price: cart.reduce((acc, cur) => acc + cur.priceTotal, 0),
+      count: cart.reduce((acc, cur) => acc + cur.count, 0),
+    })
+  }, [cart])
 
   const deleteProduct = (id: number) => {
     setCart((cart) => {
@@ -46,6 +57,22 @@ const Cart = () => {
     })
   }
 
+  const changeValue = (id: number, value: string) => {
+    setCart((cart) => {
+      return cart.map((product) => {
+        if (product.id === id) {
+          return {
+            ...product,
+            count: Number(value),
+            priceTotal: Number(value) * product.price,
+          }
+        }
+
+        return product
+      })
+    })
+  }
+
   const products = cart.map((product) => {
     return (
       <Product
@@ -54,6 +81,7 @@ const Cart = () => {
         deleteProduct={deleteProduct}
         increase={increase}
         decrease={decrease}
+        changeValue={changeValue}
       />
     )
   })
@@ -64,7 +92,7 @@ const Cart = () => {
 
       {products}
 
-      <CartFooter />
+      <CartFooter total={total} />
     </section>
   )
 }

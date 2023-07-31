@@ -5,11 +5,13 @@ const Count = ({
   count,
   increase,
   decrease,
+  changeValue,
 }: {
   id: number
   count: number
   increase: (id: number) => void
   decrease: (id: number) => void
+  changeValue: (id: number, value: string) => void
 }) => {
   return (
     <div className="count">
@@ -20,6 +22,7 @@ const Count = ({
           min="1"
           max="100"
           value={count}
+          onChange={(event) => changeValue(id, event?.target.value)}
         />
       </div>
       <div className="count__controls">
